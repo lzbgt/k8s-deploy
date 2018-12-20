@@ -1,0 +1,5 @@
+bitnami/cronjob-trigger-controller:v1.0.0-alpha.9
+bitnami/http-trigger-controller:v1.0.0-alpha.9
+kubeless/function-controller:v1.0.0
+kubeless/function-image-builder:v1.0.0
+kubeless/unzip@sha256:f162c062973cca05459834de6ed14c039d45df8cdb76097f50b028a1621b3697

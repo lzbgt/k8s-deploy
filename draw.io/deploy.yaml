@@ -1,0 +1,66 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: draw-io
+  labels:
+    app: draw-io
+spec:
+  selector:
+    app: draw-io
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
+  type: ClusterIP
+---
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: draw-io
+  labels:
+    app: draw-io
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: draw-io
+  template:
+    metadata:
+      labels:
+        app: draw-io
+    spec:
+      containers:
+      - name: draw-io
+        image: fjudith/draw.io
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: "300Mi"
+            cpu: "100m"
+          limits:
+            memory: "2000Mi"
+            cpu: "1000m"
+        ports:
+        - containerPort: 8080
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: draw-io
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/permanent-redirect: https://www.draw.io
+spec:
+  tls:
+  - hosts:
+    - draw-io.istio.dfwsgroup.cn
+    secretName: draw-io-tls
+  rules:
+  - host: draw-io.istio.dfwsgroup.cn
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: draw-io
+          servicePort: 80
